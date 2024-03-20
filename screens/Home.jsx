@@ -23,6 +23,10 @@ export default function HomeScreen({ navigation }) {
     }, [fetchContacts])
   );
 
+  const handleUpdate = (id) => {
+    navigation.navigate("AddContact", { id });
+  };
+
   const handleDelete = async (id) => {
     await deleteContact(id);
     const updatedContacts = contacts.filter((contact) => contact.id !== id);
@@ -36,7 +40,11 @@ export default function HomeScreen({ navigation }) {
         title="Add Contact"
         onPress={() => navigation.navigate("AddContact")}
       />
-      <ContactList contacts={contacts} onDelete={handleDelete} />
+      <ContactList
+        contacts={contacts}
+        onDelete={handleDelete}
+        onUpdate={handleUpdate}
+      />
     </View>
   );
 }

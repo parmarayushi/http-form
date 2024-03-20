@@ -1,38 +1,23 @@
 // src/components/ContactForm.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
-import { addContact } from "../utilities/service";
+import { addContact, updateContact } from "../utilities/service";
 
-const contactForm = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-};
+export default function ContactForm({ route, navigation }) {
+  const { contact } = route.params || {};
+  const isEditMode = contact ? true : false;
+  const [inputs, setInputs] = useState({
+    firstName: contact ? contact.firstName : "",
+    lastName: contact ? contact.lastName : "",
+    email: contact ? contact.email : "",
+    contact: contact ? contact.contact : "",
+  });
 
-export default function ContactForm({ route, onSubmit, navigation }) {
-  const [inputs, setInputs] = useState(contactForm);
-
-  //   const { id } = route.params;
-
-  //   /**
-  //    * gets emp by id
-  //    */
-  //   const fetchContactDetails = async () => {
-  //     try {
-  //       const contactDetails = await getContactById(id);
-  //       setInputs(contactDetails);
-  //       console.log(contactDetails);
-  //     } catch (error) {
-  //       console.error("Error fetching contactDetails:", error);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     if (id) {
-  //       fetchContactDetails();
-  //     }
-  //   }, [id]);
+  useEffect(() => {
+    navigation.setOptions({
+      title: isEditMode ? "Update Contact" : "Add Contact",
+    });
+  }, [isEditMode, navigation]);
 
   function handleInputChange(inputs, enteredValue) {
     setInputs((prevInputs) => {
@@ -40,16 +25,24 @@ export default function ContactForm({ route, onSubmit, navigation }) {
     });
   }
 
-  function handleSubmit() {
-    addContact(inputs);
-    Alert.alert("Contact Added Successfully");
-
-    navigation.navigate("Home");
-    setInputs(contactForm);
+  async function handleSubmit() {
+    try {
+      if (isEditMode) {
+        await updateContact(contact.id, inputs);
+        Alert.alert("Contact Updated Successfully");
+      } else {
+        await addContact(inputs);
+        Alert.alert("Contact Added Successfully");
+      }
+      navigation.goBack(); // Navigate back to the previous screen
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "Failed to save contact. Please try again.");
+    }
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -74,12 +67,15 @@ export default function ContactForm({ route, onSubmit, navigation }) {
         value={inputs.contact}
         onChangeText={handleInputChange.bind(this, "contact")}
       />
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title={isEditMode ? "Update" : "Submit"} onPress={handleSubmit} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
