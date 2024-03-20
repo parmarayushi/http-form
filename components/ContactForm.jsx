@@ -1,5 +1,5 @@
 // src/components/ContactForm.js
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, StyleSheet, TextInput, View } from "react-native";
 
 const contactForm = {
@@ -9,12 +9,8 @@ const contactForm = {
   contact: "",
 };
 
-export default function ContactForm({ onSubmit, formState }) {
-  const [inputs, setInputs] = useState(formState);
-
-  useEffect(() => {
-    setInputs(formState);
-  }, [formState]);
+export default function ContactForm({ onSubmit }) {
+  const [inputs, setInputs] = useState(contactForm);
 
   function handleInputChange(inputs, enteredValue) {
     setInputs((prevInputs) => {
@@ -24,7 +20,7 @@ export default function ContactForm({ onSubmit, formState }) {
 
   function handleSubmit() {
     onSubmit(inputs);
-    // setInputs(contactForm);
+    setInputs(contactForm);
   }
 
   return (
