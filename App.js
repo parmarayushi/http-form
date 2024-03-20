@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StyleSheet } from "react-native";
-import AddContactScreen from "./screens/AddContact";
+import ContactForm from "./screens/ContactForm";
 import HomeScreen from "./screens/Home";
 
 const Stack = createStackNavigator();
@@ -11,7 +11,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="AddContact" component={AddContactScreen} />
+        <Stack.Screen name="AddContact" component={ContactForm} />
       </Stack.Navigator>
     </NavigationContainer>
   );
